@@ -9,19 +9,15 @@ use App\AccessTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+class UserController extends Controller {
 
-class UserController extends Controller
-{
-
-
-    public function __construct(Request $request)
-    {
-        $this->middleware('auth', ['except' => ['create', 'accesstoken', 'auth']]);
-
+    public function __construct(Request $request) {
+        $this->middleware(
+                'auth', ['except' => ['create', 'accesstoken', 'auth']]
+        );
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $this->validate($request, User::rules());
 
         $attributes = $request->all();
@@ -37,11 +33,9 @@ class UserController extends Controller
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
     }
 
-    public function me()
-    {
+    public function me() {
         $data = Auth::user()->getAttributes();
 
         unset($data['password']);
@@ -55,8 +49,7 @@ class UserController extends Controller
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
-    public function accesstoken(Request $request)
-    {
+    public function accesstoken(Request $request) {
         $this->validate($request, User::accessTokenRules());
 
         $attributes = $request->all();
@@ -83,12 +76,9 @@ class UserController extends Controller
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
-
     }
 
-    public function refresh(Request $request)
-    {
+    public function refresh(Request $request) {
 
         $headers = $request->headers->all();
 
@@ -111,14 +101,10 @@ class UserController extends Controller
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
-
     }
 
-    public function auth(Request $request)
-    {
+    public function auth(Request $request) {
         $this->validate($request, User::authorizeRules());
-
 
         if ($model = User::authorize($request->all())) {
 
@@ -134,7 +120,6 @@ class UserController extends Controller
             ];
 
             return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
         } else {
 
             $response = [
@@ -143,12 +128,10 @@ class UserController extends Controller
             ];
 
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);
-
         }
     }
 
-    public function logout(Request $request)
-    {
+    public function logout(Request $request) {
 
         $token = $this->getAccessToken($request);
 
@@ -162,28 +145,21 @@ class UserController extends Controller
                 'message' => "Logged Out Successfully"
             ];
             return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
-
         } else {
             $response = [
                 'status' => 0,
                 'message' => "Invalid request"
             ];
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);
-
         }
-
     }
 
-
-    public function view($id)
-    {
+    public function view($id) {
         $model = $this->findModel($id);
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
 
         $model = $this->findModel($id);
         $this->validate($request, User::updateRules($id));
@@ -218,8 +194,7 @@ class UserController extends Controller
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
-    public function deleteRecord($id)
-    {
+    public function deleteRecord($id) {
         $model = $this->findModel($id);
         $model->delete();
 
@@ -232,15 +207,12 @@ class UserController extends Controller
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $response = User::search($request);
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
-
     }
 
-    public function findModel($id)
-    {
+    public function findModel($id) {
 
         $model = User::find($id);
         if (!$model) {
@@ -255,8 +227,7 @@ class UserController extends Controller
         return $model;
     }
 
-    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = [])
-    {
+    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = []) {
 
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
@@ -268,14 +239,12 @@ class UserController extends Controller
 
             response()->json($response, 400, [], JSON_PRETTY_PRINT)->send();
             die();
-
         }
 
         return true;
     }
 
-    public function createAuthorizationCode($user_id)
-    {
+    public function createAuthorizationCode($user_id) {
         $model = new AuthorizationCodes;
 
         $model->code = md5(uniqid());
@@ -284,10 +253,11 @@ class UserController extends Controller
 
         $model->user_id = $user_id;
 
-        if (isset($_SERVER['HTTP_X_APPLICATION_ID']))
+        if (isset($_SERVER['HTTP_X_APPLICATION_ID'])) {
             $app_id = $_SERVER['HTTP_X_APPLICATION_ID'];
-        else
+        } else {
             $app_id = null;
+        }
 
         $model->app_id = $app_id;
 
@@ -298,11 +268,9 @@ class UserController extends Controller
         $model->save();
 
         return ($model);
-
     }
 
-    public function createAccesstoken($authorization_code)
-    {
+    public function createAccesstoken($authorization_code) {
 
         $auth_code = AuthorizationCodes::where(['code' => $authorization_code])->first();
 
@@ -313,7 +281,6 @@ class UserController extends Controller
         $model->auth_code = $auth_code->code;
 
         $model->expires_at = time() + (60 * 60 * 24 * 60); // 60 days
-
         // $model->expires_at=time()+(60 * 2);// 2 minutes
 
         $model->user_id = $auth_code->user_id;
@@ -325,11 +292,9 @@ class UserController extends Controller
         $model->save();
 
         return ($model);
-
     }
 
-    public function refreshAccesstoken($token)
-    {
+    public function refreshAccesstoken($token) {
         $access_token = AccessTokens::where(['token' => $token])->first();
         if ($access_token) {
 
@@ -342,8 +307,7 @@ class UserController extends Controller
         }
     }
 
-    public function getAccessToken($request)
-    {
+    public function getAccessToken($request) {
 
         $headers = $request->headers->all();
 
@@ -352,13 +316,13 @@ class UserController extends Controller
         if (!empty($headers['x-access-token'][0])) {
 
             $token = $headers['x-access-token'][0];
-
         } else if ($request->input('access_token')) {
             $token = $request->input('access_token');
         }
 
         return $token;
     }
+
 }
 
 ?>

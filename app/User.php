@@ -7,44 +7,42 @@ use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-
 use Illuminate\Support\Facades\Hash;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
-{
-    use Authenticatable, Authorizable;
+class User extends Model implements AuthenticatableContract, AuthorizableContract {
 
-    protected $table="users";
+    use Authenticatable,
+        Authorizable;
 
-    static public function rules($id=NULL)
-    {
+    protected $table = "users";
+
+    static public function rules($id = NULL) {
         return [
-            'username' => 'required|unique:users,username,'.$id,
+            'username' => 'required|unique:users,username,' . $id,
             'password' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
         ];
     }
-    static public function updateRules($id=NULL)
-    {
+
+    static public function updateRules($id = NULL) {
         return [
-            'username' => 'required|unique:users,username,'.$id,
-            'email' => 'required|email|unique:users,email,'.$id,
+            'username' => 'required|unique:users,username,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
         ];
     }
-    static public function authorizeRules()
-    {
+
+    static public function authorizeRules() {
         return [
             'username' => 'required',
             'password' => 'required',
         ];
     }
-    static public function accessTokenRules()
-    {
+
+    static public function accessTokenRules() {
         return [
             'authorization_code' => 'required',
         ];
     }
-
 
     /**
      * The attributes that are mass assignable.
@@ -52,7 +50,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'username', 'email','password','name',
+        'username', 'email', 'password', 'name',
     ];
 
     /**
@@ -64,8 +62,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
         'password_reset_token'
     ];
-    static public function search($request)
-    {
+
+    static public function search($request) {
 
         $page = $request->input('page');
         $limit = $request->input('limit');
@@ -73,8 +71,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         $search = $request->input('search');
 
-        if(isset($search)){
-            $params=$search;
+        if (isset($search)) {
+            $params = $search;
         }
 
         $limit = isset($limit) ? $limit : 10;
@@ -84,53 +82,51 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $offset = ($page - 1) * $limit;
 
         $query = User::select(['id', 'username', 'email', 'created_at', 'updated_at'])
-            ->limit($limit)
-            ->offset($offset);
+                ->limit($limit)
+                ->offset($offset);
 
-        if(isset($params['id'])) {
+        if (isset($params['id'])) {
             $query->where(['id' => $params['id']]);
         }
 
-        if(isset($params['created_at'])) {
+        if (isset($params['created_at'])) {
             $query->where(['created_at' => $params['created_at']]);
         }
-        if(isset($params['updated_at'])) {
+        if (isset($params['updated_at'])) {
             $query->where(['updated_at' => $params['updated_at']]);
         }
-        if(isset($params['username'])) {
-            $query->where('username','like',$params['username']);
+        if (isset($params['username'])) {
+            $query->where('username', 'like', $params['username']);
         }
-        if(isset($params['email'])){
-            $query->where('email','like',$params['email']);
+        if (isset($params['email'])) {
+            $query->where('email', 'like', $params['email']);
         }
 
 
-        if(isset($order)){
+        if (isset($order)) {
             $query->orderBy($order);
         }
 
-        $data=$query->get();
+        $data = $query->get();
 
 
         return [
-            'status'=>1,
+            'status' => 1,
             'data' => $data,
-            'page' => (int)$page,
+            'page' => (int) $page,
             'size' => $limit,
-            'totalCount' => (int)$data->count()
+            'totalCount' => (int) $data->count()
         ];
     }
 
+    public static function authorize($attributes) {
 
-
-    public static function authorize($attributes){
-
-        $model=User::where(['username'=>$attributes['username']])->select(['id','username','password'])->first();
-        if(!$model)
+        $model = User::where(['username' => $attributes['username']])->select(['id', 'username', 'password'])->first();
+        if (!$model)
             return false;
 
 
-        if(Hash::check($attributes['password'],$model->password)) {
+        if (Hash::check($attributes['password'], $model->password)) {
             return $model;
             // Right password
         } else {
@@ -143,19 +139,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /*
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        $access_token = AccessTokens::findOne(['token' => $token]);
-        if ($access_token) {
-            if ($access_token->expires_at < time()) {
-                Yii::$app->api->sendFailedResponse('Access token expired');
-            }
+      public static function findIdentityByAccessToken($token, $type = null)
+      {
+      $access_token = AccessTokens::findOne(['token' => $token]);
+      if ($access_token) {
+      if ($access_token->expires_at < time()) {
+      Yii::$app->api->sendFailedResponse('Access token expired');
+      }
 
-            return static::findOne(['id' => $access_token->user_id]);
-        } else {
-            return (false);
-        }
-        //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-    }
-    */
+      return static::findOne(['id' => $access_token->user_id]);
+      } else {
+      return (false);
+      }
+      //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+      }
+     */
 }
