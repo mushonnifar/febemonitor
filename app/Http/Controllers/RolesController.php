@@ -81,6 +81,29 @@ class RolesController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {put} /role/:id Update Role
+     * @apiVersion 0.1.0
+     * @apiName Update Role
+     * @apiGroup Roles
+     *
+     * @apiHeader {String} x-access-token token autentikasi
+     * 
+     * @apiParam {Integer} id id user
+     * @apiParam {String} name nama role
+     * @apiParam {String} description deskripsi role
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama role
+     * @apiSuccess {String} data.description deskripsi role
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     *
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} errors pesan eror
+     */
     public function update(Request $request, $id) {
         $model = $this->findModel($id);
         
@@ -100,6 +123,28 @@ class RolesController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {delete} /role/:id Delete Role
+     * @apiVersion 0.1.0
+     * @apiName Delete Role
+     * @apiGroup Roles
+     * 
+     * @apiHeader {String} x-access-token token autentikasi
+     *
+     * @apiParam {Integer} id id role
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama role
+     * @apiSuccess {String} data.description deskripsi role
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     * @apiSuccess {String} message Removed successfully
+     *
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} errors pesan eror
+     */
     public function deleteRecord($id) {
         $model = $this->findModel($id);
         $model->delete();
@@ -113,6 +158,25 @@ class RolesController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {get} /role/ Get All Data
+     * @apiVersion 0.1.0
+     * @apiName Get All Data
+     * @apiGroup Roles
+     * 
+     * @apiHeader {String} x-access-token token autentikasi
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama role
+     * @apiSuccess {String} data.description deskripsi role
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     * @apiSuccess {Integer} page halaman
+     * @apiSuccess {Integer} size banyak data per halaman
+     * @apiSuccess {Integer} totalCount jumlah seluruh data
+     */
     public function index(Request $request) {
         $models = Roles::search($request);
 

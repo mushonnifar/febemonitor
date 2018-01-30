@@ -384,7 +384,7 @@ class UserController extends Controller {
      *
      * @apiSuccess {Integer} status 1 (success)
      * @apiSuccess {Array[]} data array data
-     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {Integer} data.id id user
      * @apiSuccess {String} data.name nama user
      * @apiSuccess {String} data.username username user
      * @apiSuccess {String} data.email email user
