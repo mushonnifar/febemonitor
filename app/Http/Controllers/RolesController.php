@@ -17,6 +17,8 @@ class RolesController extends Controller {
      * @apiName Create Roles
      * @apiGroup Roles
      *
+     * @apiHeader {String} x-access-token token autentikasi
+     * 
      * @apiParam {String} name nama role
      * @apiParam {String} description deskripsi role
      *
@@ -47,6 +49,29 @@ class RolesController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {post} /role/:id Get Role By ID
+     * @apiVersion 0.1.0
+     * @apiName Get Role By ID
+     * @apiGroup Roles
+     *
+     * @apiHeader {String} x-access-token token autentikasi
+     * 
+     * @apiParam {Integer} id id role
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama role
+     * @apiSuccess {String} data.description deskripsi role
+     * @apiSuccess {Integer} data.updated_by id user yang melakukan update data
+     * @apiSuccess {Integer} data.created_by id user yang melakukan create data
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     *
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} errors pesan eror
+     */
     public function view($id) {
         $model = $this->findModel($id);
         $response = [
