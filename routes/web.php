@@ -31,16 +31,23 @@ $router->group(['prefix' => 'user'], function($app) {
     $app->post('/logout', 'UserController@logout');
     $app->get('/me', 'UserController@me');
     $app->get('/{id}', 'UserController@view');
-    $app->get('/users', 'UserController@index');
+    $app->get('/', 'UserController@index');
     $app->put('/{id}', 'UserController@update');
     $app->delete('/{id}', 'UserController@deleteRecord');
 });
 
+$router->group(['prefix' => 'action'], function($app) {
+    $app->post('/', 'ActionsController@create');
+    $app->put('/{id}', 'ActionsController@update');
+    $app->get('/{id}', 'ActionsController@view');
+    $app->delete('/{id}', 'ActionsController@deleteRecord');
+    $app->get('/', 'ActionsController@index');
+});
 
-$router->group(['prefix' => 'employee'], function($app) {
-    $app->post('/', 'EmployeesController@create');
-    $app->put('/{id}', 'EmployeesController@update');
-    $app->get('/{id}', 'EmployeesController@view');
-    $app->delete('/{id}', 'EmployeesController@deleteRecord');
-    $app->get('/', 'EmployeesController@index');
+$router->group(['prefix' => 'role'], function($app) {
+    $app->post('/', 'RolesController@create');
+    $app->put('/{id}', 'RolesController@update');
+    $app->get('/{id}', 'RolesController@view');
+    $app->delete('/{id}', 'RolesController@deleteRecord');
+    $app->get('/', 'RolesController@index');
 });

@@ -1,0 +1,7 @@
+{
+	"name": "FEBE API",
+	"version": "0.1.0",
+	"description": "dokumentasi dari API FEBE",
+	"title": "FEBE API Documentation",
+    "url" : "localhost:8000"
+}
