@@ -1,6 +1,6 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
+    "name": "mushonnif/febeapi",
+    "description": "API Project FEBE",
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
     "type": "project",
