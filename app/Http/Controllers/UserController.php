@@ -12,11 +12,36 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller {
 
     public function __construct(Request $request) {
+        /*
+         * midleware auth berikut bertujuan untuk memberi batasan akses user
+         * elemen di 'except' merupakan method/function yang tidak diberikan autentikasi
+         */
         $this->middleware(
                 'auth', ['except' => ['create', 'accesstoken', 'auth']]
         );
     }
 
+    /**
+     * @api {post} /user/ Create User
+     * @apiVersion 0.1.0
+     * @apiName Create User
+     * @apiGroup Users
+     *
+     * @apiParam {String} name nama user
+     * @apiParam {String} username username user
+     * @apiParam {String} password password user
+     * @apiParam {String} email email user
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {String} data.name nama user
+     * @apiSuccess {String} data.username username user
+     * @apiSuccess {String} data.email email user
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     * @apiSuccess {Integer} data.id id user
+     *
+     */
     public function create(Request $request) {
         $this->validate($request, User::rules());
 
@@ -35,6 +60,22 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {get} /user/me Get My Identity
+     * @apiVersion 0.1.0
+     * @apiName Get My Identity
+     * @apiGroup Users
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama user
+     * @apiSuccess {String} data.username username user
+     * @apiSuccess {String} data.email email user
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     *
+     */
     public function me() {
         $data = Auth::user()->getAttributes();
 
@@ -49,6 +90,24 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {post} /user/gettoken Get Token
+     * @apiVersion 0.1.0
+     * @apiName Get Token
+     * @apiGroup Users
+     *
+     * @apiDescription Get Token digunakan untuk mendapatkan token, token ini nantinya dipakai untuk mengakses API.
+     * 
+     * @apiParam {String} authorization_code kode otorisasi
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {String} data.access_token kode token
+     * @apiSuccess {Integer} data.expires_at expired token
+     * 
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} error pesan eror
+     */
     public function accesstoken(Request $request) {
         $this->validate($request, User::accessTokenRules());
 
@@ -78,6 +137,24 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {post} /user/refresh Refresh Token
+     * @apiVersion 0.1.0
+     * @apiName Refresh Token
+     * @apiGroup Users
+     *
+     * @apiDescription Refresh Token digunakan untuk mendapatkan token baru setelah token sudah kadaluarsa.
+     * 
+     * @apiHeader {String} x-access-token token autentikasi
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {String} data.access_token kode token
+     * @apiSuccess {Integer} data.expires_at expired token
+     * 
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} error pesan eror
+     */
     public function refresh(Request $request) {
 
         $headers = $request->headers->all();
@@ -103,6 +180,25 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {post} /user/auth Login User
+     * @apiVersion 0.1.0
+     * @apiName Login User
+     * @apiGroup Users
+     *
+     * @apiDescription Login user untuk mendapatkan kode otorisasi
+     * 
+     * @apiParam {String} username username
+     * @apiParam {String} password password
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {String} data.authorization_code kode otorisasi
+     * @apiSuccess {Integer} data.expires_at expired token
+     * 
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} error pesan eror
+     */
     public function auth(Request $request) {
         $this->validate($request, User::authorizeRules());
 
@@ -131,6 +227,18 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * @api {post} /user/logout Logout
+     * @apiVersion 0.1.0
+     * @apiName Logout User
+     * @apiGroup Users
+     * 
+     * @apiHeader {String} x-access-token token autentikasi
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {String} data pesan sukses
+     * 
+     */
     public function logout(Request $request) {
 
         $token = $this->getAccessToken($request);
@@ -154,11 +262,51 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * @api {post} /user/:id Get User By ID
+     * @apiVersion 0.1.0
+     * @apiName Get User
+     * @apiGroup Users
+     *
+     * @apiParam {Integer} id id user
+     *
+     * @apiSuccess {Integer} id id user
+     * @apiSuccess {String} name nama user
+     * @apiSuccess {String} username username user
+     * @apiSuccess {String} email email user
+     * @apiSuccess {Timestamp} updated_at waktu update data
+     * @apiSuccess {Timestamp} created_at waktu create data
+     *
+     */
     public function view($id) {
         $model = $this->findModel($id);
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {put} /user/:id Update User
+     * @apiVersion 0.1.0
+     * @apiName Update User
+     * @apiGroup Users
+     *
+     * @apiParam {Integer} id id user
+     * @apiParam {String} name nama user
+     * @apiParam {String} username username user
+     * @apiParam {String} password password user
+     * @apiParam {String} email email user
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id user
+     * @apiSuccess {String} data.name nama user
+     * @apiSuccess {String} data.username username user
+     * @apiSuccess {String} data.email email user
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     *
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} errors pesan eror
+     */
     public function update(Request $request, $id) {
 
         $model = $this->findModel($id);
@@ -194,6 +342,27 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {delete} /user/:id Delete User
+     * @apiVersion 0.1.0
+     * @apiName Delete User
+     * @apiGroup Users
+     *
+     * @apiParam {Integer} id id user
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id user
+     * @apiSuccess {String} data.name nama user
+     * @apiSuccess {String} data.username username user
+     * @apiSuccess {String} data.email email user
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     * @apiSuccess {String} message Removed successfully
+     *
+     * @apiError {Integer} status 0 (fail)
+     * @apiError {String} errors pesan eror
+     */
     public function deleteRecord($id) {
         $model = $this->findModel($id);
         $model->delete();
@@ -207,6 +376,24 @@ class UserController extends Controller {
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @api {get} /user/ Get All Data
+     * @apiVersion 0.1.0
+     * @apiName Get All Data
+     * @apiGroup Users
+     *
+     * @apiSuccess {Integer} status 1 (success)
+     * @apiSuccess {Array[]} data array data
+     * @apiSuccess {Integer} data.id id role
+     * @apiSuccess {String} data.name nama user
+     * @apiSuccess {String} data.username username user
+     * @apiSuccess {String} data.email email user
+     * @apiSuccess {Timestamp} data.updated_at waktu update data
+     * @apiSuccess {Timestamp} data.created_at waktu create data
+     * @apiSuccess {Integer} page halaman
+     * @apiSuccess {Integer} size banyak data per halaman
+     * @apiSuccess {Integer} totalCount jumlah seluruh data
+     */
     public function index(Request $request) {
         $response = User::search($request);
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -225,23 +412,6 @@ class UserController extends Controller {
             die;
         }
         return $model;
-    }
-
-    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = []) {
-
-        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
-
-        if ($validator->fails()) {
-            $response = [
-                'status' => 0,
-                'errors' => $validator->errors()
-            ];
-
-            response()->json($response, 400, [], JSON_PRETTY_PRINT)->send();
-            die();
-        }
-
-        return true;
     }
 
     public function createAuthorizationCode($user_id) {
@@ -324,5 +494,3 @@ class UserController extends Controller {
     }
 
 }
-
-?>

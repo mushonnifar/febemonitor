@@ -81,7 +81,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         $offset = ($page - 1) * $limit;
 
-        $query = User::select(['id', 'username', 'email', 'created_at', 'updated_at'])
+        $query = User::select(['id', 'name', 'username', 'email', 'created_at', 'updated_at'])
                 ->limit($limit)
                 ->offset($offset);
 
