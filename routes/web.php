@@ -55,9 +55,17 @@ $router->group(['prefix' => 'role'], function($app) {
 $router->group(['prefix' => 'menu'], function($app) {
     $app->post('/', 'MenusController@create');
     $app->put('/{id}', 'MenusController@update');
-    $app->get('/{id}', 'MenusController@view');
+    $app->get('/id/{id}', 'MenusController@view');
     $app->delete('/{id}', 'MenusController@deleteRecord');
     $app->get('/', 'MenusController@index');
     $app->get('/parent', 'MenusController@getParent');
     $app->get('/getmenu', 'MenusController@getMenu');
+});
+
+$router->group(['prefix' => 'userrole'], function($app) {
+    $app->post('/', 'UserhasroleController@create');
+    $app->put('/{id}', 'UserhasroleController@update');
+    $app->get('/id/{id}', 'UserhasroleController@view');
+    $app->delete('/{id}', 'UserhasroleController@deleteRecord');
+    $app->get('/', 'UserhasroleController@index');
 });

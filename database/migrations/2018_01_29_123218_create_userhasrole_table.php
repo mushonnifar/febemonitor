@@ -18,9 +18,7 @@ class CreateUserhasroleTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->integer('created_by');
-            $table->integer('deleted_by');
             $table->integer('updated_by');
-            $table->softDeletes();
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users');
