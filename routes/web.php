@@ -51,3 +51,13 @@ $router->group(['prefix' => 'role'], function($app) {
     $app->delete('/{id}', 'RolesController@deleteRecord');
     $app->get('/', 'RolesController@index');
 });
+
+$router->group(['prefix' => 'menu'], function($app) {
+    $app->post('/', 'MenusController@create');
+    $app->put('/{id}', 'MenusController@update');
+    $app->get('/{id}', 'MenusController@view');
+    $app->delete('/{id}', 'MenusController@deleteRecord');
+    $app->get('/', 'MenusController@index');
+    $app->get('/parent', 'MenusController@getParent');
+    $app->get('/getmenu', 'MenusController@getMenu');
+});

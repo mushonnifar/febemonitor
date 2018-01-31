@@ -19,10 +19,9 @@ class CreateMenusTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('link');
+            $table->char('isactive',1);
             $table->integer('created_by');
-            $table->integer('deleted_by');
             $table->integer('updated_by');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

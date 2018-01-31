@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\User;
+use App\Model\User;
 use App\AuthorizationCodes;
 use App\AccessTokens;
 use Illuminate\Support\Facades\Gate;
