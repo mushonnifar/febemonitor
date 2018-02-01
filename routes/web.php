@@ -65,7 +65,15 @@ $router->group(['prefix' => 'menu'], function($app) {
 $router->group(['prefix' => 'userrole'], function($app) {
     $app->post('/', 'UserhasroleController@create');
     $app->put('/{id}', 'UserhasroleController@update');
-    $app->get('/id/{id}', 'UserhasroleController@view');
+    $app->get('/{id}', 'UserhasroleController@view');
     $app->delete('/{id}', 'UserhasroleController@deleteRecord');
     $app->get('/', 'UserhasroleController@index');
+});
+
+$router->group(['prefix' => 'rolemenu'], function($app) {
+    $app->post('/', 'RolehasmenuController@create');
+    $app->put('/{id}', 'RolehasmenuController@update');
+    $app->get('/{id}', 'RolehasmenuController@view');
+    $app->delete('/{id}', 'RolehasmenuController@deleteRecord');
+    $app->get('/', 'RolehasmenuController@index');
 });

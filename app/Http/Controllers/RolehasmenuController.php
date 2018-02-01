@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Userhasrole;
+use App\Model\Rolehasmenu;
 use Illuminate\Http\Request;
 
-class UserhasroleController extends Controller {
+class RolehasmenuController extends Controller {
 
     public function __construct(Request $request) {
         $this->middleware('auth');
@@ -14,8 +14,8 @@ class UserhasroleController extends Controller {
     /**
      * @api {post} /role/ Create role
      * @apiVersion 0.1.0
-     * @apiName Create Userhasrole
-     * @apiGroup Userhasrole
+     * @apiName Create Rolehasmenu
+     * @apiGroup Rolehasmenu
      *
      * @apiHeader {String} x-access-token token autentikasi
      * 
@@ -33,13 +33,13 @@ class UserhasroleController extends Controller {
      *
      */
     public function create(Request $request) {
-        $this->validate($request, Userhasrole::rules());
+        $this->validate($request, Rolehasmenu::rules());
 
         $identity = $this->getIdentity($request);
 
         $attributes = $request->all();
         $attributes['created_by'] = $identity['user_id'];
-        $model = Userhasrole::create($attributes);
+        $model = Rolehasmenu::create($attributes);
 
         $response = [
             'status' => 1,
@@ -53,7 +53,7 @@ class UserhasroleController extends Controller {
      * @api {post} /role/:id Get Role By ID
      * @apiVersion 0.1.0
      * @apiName Get Role By ID
-     * @apiGroup Userhasrole
+     * @apiGroup Rolehasmenu
      *
      * @apiHeader {String} x-access-token token autentikasi
      * 
@@ -85,7 +85,7 @@ class UserhasroleController extends Controller {
      * @api {put} /role/:id Update Role
      * @apiVersion 0.1.0
      * @apiName Update Role
-     * @apiGroup Userhasrole
+     * @apiGroup Rolehasmenu
      *
      * @apiHeader {String} x-access-token token autentikasi
      * 
@@ -105,19 +105,19 @@ class UserhasroleController extends Controller {
      * @apiError {String} errors pesan eror
      */
     public function update(Request $request, $id) {
-        $model = $this->findModel($id);
-        
-        $this->validate($request, Userhasrole::rules($id));
-        
+        $data = $this->findModel($id);
+
+        $this->validate($request, Rolehasmenu::rules($id));
+
         $identity = $this->getIdentity($request);
-        
+
         $attributes = $request->all();
         $attributes['updated_by'] = $identity['user_id'];
-        $model->update($attributes);
+        $update = Rolehasmenu::updateData($attributes, $id);
 
         $response = [
             'status' => 1,
-            'data' => $model
+            'data' => $attributes
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -127,7 +127,7 @@ class UserhasroleController extends Controller {
      * @api {delete} /role/:id Delete Role
      * @apiVersion 0.1.0
      * @apiName Delete Role
-     * @apiGroup Userhasrole
+     * @apiGroup Rolehasmenu
      * 
      * @apiHeader {String} x-access-token token autentikasi
      *
@@ -146,7 +146,9 @@ class UserhasroleController extends Controller {
      * @apiError {String} errors pesan eror
      */
     public function deleteRecord($id) {
-        $model = $this->findModel($id);
+        $this->findModel($id);
+        
+        $model = Rolehasmenu::find($id);
         $model->delete();
 
         $response = [
@@ -162,7 +164,7 @@ class UserhasroleController extends Controller {
      * @api {get} /role/ Get All Data
      * @apiVersion 0.1.0
      * @apiName Get All Data
-     * @apiGroup Userhasrole
+     * @apiGroup Rolehasmenu
      * 
      * @apiHeader {String} x-access-token token autentikasi
      *
@@ -178,7 +180,7 @@ class UserhasroleController extends Controller {
      * @apiSuccess {Integer} totalCount jumlah seluruh data
      */
     public function index(Request $request) {
-        $models = Userhasrole::search($request);
+        $models = Rolehasmenu::search($request);
 
         $response = [
             'status' => 1,
@@ -190,7 +192,7 @@ class UserhasroleController extends Controller {
 
     public function findModel($id) {
 
-        $model = Userhasrole::getById($id);
+        $model = Rolehasmenu::getById($id);
         if (count($model) < 1) {
             $response = [
                 'status' => 0,
@@ -202,4 +204,5 @@ class UserhasroleController extends Controller {
         }
         return $model;
     }
+
 }
