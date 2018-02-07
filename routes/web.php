@@ -77,3 +77,11 @@ $router->group(['prefix' => 'rolemenu'], function($app) {
     $app->delete('/{id}', 'RolehasmenuController@deleteRecord');
     $app->get('/', 'RolehasmenuController@index');
 });
+
+$router->group(['prefix' => 'rolemenuaction'], function($app) {
+    $app->post('/', 'RolemenuhasactionController@create');
+    $app->put('/{id}', 'RolemenuhasactionController@update');
+    $app->get('/{id}', 'RolemenuhasactionController@view');
+    $app->delete('/{id}', 'RolemenuhasactionController@deleteRecord');
+    $app->get('/', 'RolemenuhasactionController@index');
+});
