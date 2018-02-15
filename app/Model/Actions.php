@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Actions extends Model {
 
-    protected $fillable = ['name','description','created_by','updated_by','deleted_by'];
+    protected $fillable = ['name','description','created_by','updated_by'];
 
     static public function rules() {
         return [
@@ -32,7 +32,7 @@ class Actions extends Model {
 
         $offset = ($page - 1) * $limit;
 
-        $query = Actions::select(['id', 'name', 'description','created_by','deleted_by','updated_by', 'deleted_at', 'created_at', 'updated_at'])
+        $query = Actions::select(['id', 'name', 'description','created_by','updated_by', 'created_at', 'updated_at'])
                 ->limit($limit)
                 ->offset($offset);
 

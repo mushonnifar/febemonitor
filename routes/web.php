@@ -29,14 +29,14 @@ $router->group(['prefix' => 'user'], function($app) {
     $app->post('/gettoken', 'UserController@accesstoken');
     $app->post('/refresh', 'UserController@refresh');
     $app->post('/logout', 'UserController@logout');
-    $app->get('/me', 'UserController@me');
+//    $app->get('/me', 'UserController@me');
     $app->get('/{id}', 'UserController@view');
-    $app->get('/', 'UserController@index');
+    $app->get('/', ['middleware' => 'otoritas:user,read', 'uses'=>'UserController@index']);
     $app->put('/{id}', 'UserController@update');
     $app->delete('/{id}', 'UserController@deleteRecord');
 });
 
-$router->group(['prefix' => 'action'], function($app) {
+$router->group(['prefix' => 'action', 'middleware' => ['otoritas:user,read']], function($app) {
     $app->post('/', 'ActionsController@create');
     $app->put('/{id}', 'ActionsController@update');
     $app->get('/{id}', 'ActionsController@view');
