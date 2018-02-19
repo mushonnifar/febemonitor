@@ -22,8 +22,8 @@ class Controller extends BaseController {
 
         if ($validator->fails()) {
             $response = [
-                'status' => 0,
-                'errors' => $validator->errors()
+                'status' => "errors",
+                'message' => $validator->errors()
             ];
 
             response()->json($response, 400, [], JSON_PRETTY_PRINT)->send();

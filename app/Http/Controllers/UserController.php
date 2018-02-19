@@ -17,7 +17,7 @@ class UserController extends Controller {
          * elemen di 'except' merupakan method/function yang tidak diberikan autentikasi
          */
         $this->middleware(
-                'auth', ['except' => ['create', 'accesstoken', 'auth']]
+                'auth', ['except' => ['accesstoken', 'auth']]
         );
     }
 
@@ -53,7 +53,8 @@ class UserController extends Controller {
 
 
         $response = [
-            'status' => 1,
+            'status' => "success",
+            'message' => "data has been added",
             'data' => $model
         ];
 
@@ -117,8 +118,8 @@ class UserController extends Controller {
 
         if (!$auth_code) {
             $response = [
-                'status' => 0,
-                'error' => "Invalid Authorization Code"
+                'status' => "errors",
+                'message' => "Invalid Authorization Code"
             ];
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);
         }
@@ -130,7 +131,8 @@ class UserController extends Controller {
         $data['expires_at'] = $model->expires_at;
 
         $response = [
-            'status' => 1,
+            'status' => "success",
+            'message' => "request successful",
             'data' => $data
         ];
 
@@ -162,8 +164,8 @@ class UserController extends Controller {
         if (!$access_token = $this->refreshAccesstoken($headers['x-access-token'])) {
 
             $response = [
-                'status' => 0,
-                'error' => "Invalid Access token"
+                'status' => "errors",
+                'message' => "Invalid Access token"
             ];
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);
         }
@@ -173,7 +175,8 @@ class UserController extends Controller {
         $data['access_token'] = $access_token->token;
         $data['expires_at'] = $access_token->expires_at;
         $response = [
-            'status' => 1,
+            'status' => "success",
+            'message' => "refresh token succesful",
             'data' => $data
         ];
 
@@ -211,7 +214,8 @@ class UserController extends Controller {
             $data['expires_at'] = $auth_code->expires_at;
 
             $response = [
-                'status' => 1,
+                'status' => "success",
+                'message' => "login successfully",
                 'data' => $data
             ];
 
@@ -219,8 +223,8 @@ class UserController extends Controller {
         } else {
 
             $response = [
-                'status' => 0,
-                'error' => "Username or Password is wrong"
+                'status' => "errors",
+                'message' => "Username or Password is wrong"
             ];
 
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);
@@ -249,13 +253,13 @@ class UserController extends Controller {
         if ($model->delete()) {
 
             $response = [
-                'status' => 1,
+                'status' => "success",
                 'message' => "Logged Out Successfully"
             ];
             return response()->json($response, 200, [], JSON_PRETTY_PRINT);
         } else {
             $response = [
-                'status' => 0,
+                'status' => "errors",
                 'message' => "Invalid request"
             ];
             return response()->json($response, 400, [], JSON_PRETTY_PRINT);

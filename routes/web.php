@@ -24,25 +24,25 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'user'], function($app) {
-    $app->post('/', 'UserController@create');
+    $app->post('/', ['middleware' => 'otoritas:user,create', 'uses' => 'UserController@create']);
     $app->post('/auth', 'UserController@auth');
     $app->post('/gettoken', 'UserController@accesstoken');
     $app->post('/refresh', 'UserController@refresh');
     $app->post('/logout', 'UserController@logout');
 //    $app->get('/me', 'UserController@me');
-    $app->get('/{id}', 'UserController@view');
-    $app->get('/', ['middleware' => 'otoritas:user,read', 'uses'=>'UserController@index']);
-    $app->put('/{id}', 'UserController@update');
-    $app->delete('/{id}', 'UserController@deleteRecord');
+    $app->get('/{id}', ['middleware' => 'otoritas:user,read', 'uses' => 'UserController@view']);
+    $app->get('/', ['middleware' => 'otoritas:user,read', 'uses' => 'UserController@index']);
+    $app->put('/{id}', ['middleware' => 'otoritas:user,update', 'uses' => 'UserController@update']);
+    $app->delete('/{id}', ['middleware' => 'otoritas:user,update', 'uses' => 'UserController@deleteRecord']);
 });
 
-$router->group(['prefix' => 'action', 'middleware' => ['otoritas:user,read']], function($app) {
-    $app->post('/', 'ActionsController@create');
-    $app->put('/{id}', 'ActionsController@update');
-    $app->get('/{id}', 'ActionsController@view');
-    $app->delete('/{id}', 'ActionsController@deleteRecord');
-    $app->get('/', 'ActionsController@index');
-});
+//$router->group(['prefix' => 'action'], function($app) {
+//    $app->post('/', 'ActionsController@create');
+//    $app->put('/{id}', 'ActionsController@update');
+//    $app->get('/{id}', 'ActionsController@view');
+//    $app->delete('/{id}', 'ActionsController@deleteRecord');
+//    $app->get('/', 'ActionsController@index');
+//});
 
 $router->group(['prefix' => 'role'], function($app) {
     $app->post('/', 'RolesController@create');

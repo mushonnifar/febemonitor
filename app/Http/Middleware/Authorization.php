@@ -16,21 +16,21 @@ class Authorization {
      * @return mixed
      */
     public function handle($request, Closure $next, $route, $action) {
-//        $headers = $request->headers->all();
-//        $id = "";
-//        if (!empty($headers['x-access-token'][0])) {
-//            $id = $this->findIdentityByAccessToken($headers['x-access-token'][0]);
-//        } else if ($request->input('access_token')) {
-//            $id = $this->findIdentityByAccessToken($request->input('api_token'));
-//        }
-//        if (!$this->cekAkses($id, $route, $action) > 0) {
-//            $response = [
-//                'status' => 0,
-//                'error' => "Access token expired"
-//            ];
-//            response()->json($response, 400, [], JSON_PRETTY_PRINT)->send();
-//            die;
-//        }
+        $headers = $request->headers->all();
+        $id = "";
+        if (!empty($headers['x-access-token'][0])) {
+            $id = $this->findIdentityByAccessToken($headers['x-access-token'][0]);
+        } else if ($request->input('access_token')) {
+            $id = $this->findIdentityByAccessToken($request->input('api_token'));
+        }
+        if (!$this->cekAkses($id, $route, $action) > 0) {
+            $response = [
+                'status' => "errors",
+                'message' => "Unauthorized"
+            ];
+            response()->json($response, 400, [], JSON_PRETTY_PRINT)->send();
+            die;
+        }
         return $next($request);
     }
 
