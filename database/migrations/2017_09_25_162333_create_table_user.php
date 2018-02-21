@@ -20,8 +20,11 @@ class CreateTableUser extends Migration
             $table->string('password');
             $table->string('password_reset_token')->nullable();
             $table->string('email')->unique();
-            $table->boolean('developer')->default(0);
-            $table->rememberToken();
+            $table->char('isactive', 1);
+            $table->integer('created_by');
+            $table->integer('updated_by');
+//            $table->boolean('developer')->default(0);
+//            $table->rememberToken();
             $table->timestamps();
         });
     }

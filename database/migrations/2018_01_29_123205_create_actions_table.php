@@ -18,9 +18,7 @@ class CreateActionsTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->integer('created_by');
-            $table->integer('deleted_by');
             $table->integer('updated_by');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

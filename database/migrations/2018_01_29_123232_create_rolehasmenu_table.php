@@ -18,9 +18,7 @@ class CreateRolehasmenuTable extends Migration
             $table->integer('role_id')->unsigned();
             $table->integer('menu_id')->unsigned();
             $table->integer('created_by');
-            $table->integer('deleted_by');
             $table->integer('updated_by');
-            $table->softDeletes();
             $table->timestamps();
             
             $table->foreign('role_id')->references('id')->on('roles');
