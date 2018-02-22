@@ -13,5 +13,9 @@ class DatabaseSeeder extends Seeder
     {
          $this->call('UsersTableSeeder');
          $this->call('ActionsTableSeeder');
+         $this->call('RoutesTableSeeder');
+         $this->call('RolesTableSeeder');
+         $this->call('RolehasrouteTableSeeder');
+         $this->call('RoleroutehasactionTableSeeder');
     }
 }

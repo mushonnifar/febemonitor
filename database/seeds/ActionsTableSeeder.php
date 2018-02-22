@@ -13,21 +13,27 @@ class ActionsTableSeeder extends Seeder {
         //
         app('db')->table('actions')->insert([
             [
+                'id' => 1,
                 'name' => 'create'
             ],
             [
+                'id' => 2,
                 'name' => 'read',
             ],
             [
+                'id' => 3,
                 'name' => 'update',
             ],
             [
+                'id' => 4,
                 'name' => 'delete',
             ],
             [
+                'id' => 5,
                 'name' => 'print',
             ],
             [
+                'id' => 6,
                 'name' => 'approve',
             ]
         ]);
